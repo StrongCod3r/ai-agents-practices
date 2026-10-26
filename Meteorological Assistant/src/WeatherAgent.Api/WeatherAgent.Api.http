@@ -1,0 +1,34 @@
+@host = http://localhost:5280
+
+### Estado (sin IA ni servicios externos)
+GET {{host}}/health
+
+### Tiempo actual
+POST {{host}}/api/weather
+Content-Type: application/json
+
+{"message":"¿Qué tiempo hace ahora en Madrid, España?"}
+
+### Recomendación de actividad basada en previsión por horas
+POST {{host}}/api/weather
+Content-Type: application/json
+
+{"message":"¿Sería buen día para salir a correr mañana en Valencia, España? Recomienda una franja horaria y explica por qué."}
+
+### Reto: varias ciudades
+POST {{host}}/api/weather
+Content-Type: application/json
+
+{"message":"Compara Madrid, España; Barcelona, España; y Sevilla, España para correr mañana. ¿Dónde y a qué hora tendría mejores condiciones?"}
+
+### Ambigüedad: el agente debe solicitar aclaración si hay homónimos
+POST {{host}}/api/weather
+Content-Type: application/json
+
+{"message":"¿Qué tiempo hará mañana en Springfield?"}
+
+### Concepto: el modelo puede responder sin herramientas
+POST {{host}}/api/weather
+Content-Type: application/json
+
+{"message":"¿Qué significa una probabilidad de precipitación del 60 %?"}

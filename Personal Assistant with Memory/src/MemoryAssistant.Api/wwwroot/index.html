@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f8f7f4">
+  <meta name="description" content="Conversa con tu asistente personal y decide qué quieres que recuerde.">
+  <title>Memoria · Tu asistente personal</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H4l-1 1V12A9 9 0 0 1 12 3a9 9 0 0 1 9 8.5Z"/><path d="M8 10h8M8 14h5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M12 19V5m-6 6 6-6 6 6"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-memory" viewBox="0 0 24 24"><path d="M12 4c-4-4-10 2-6 6-5 2-3 9 2 8 0 4 4 4 4 1V4Zm0 0c4-4 10 2 6 6 5 2 3 9-2 8 0 4-4 4-4 1"/><path d="M8 7c0 2 1 3 4 3m4-3c0 2-1 3-4 3M7 14c2-1 4 0 5 2m5-2c-2-1-4 0-5 2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="m15 4 5 5M4 20l5-1L21 7a2 2 0 0 0-5-5L4 14l-1 7Z"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6 6a8 8 0 0 1 13 2M5 16a8 8 0 0 0 13 2"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v.1"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  </defs></svg>
+
+  <button id="scrim" class="scrim" aria-label="Cerrar paneles" hidden></button>
+  <aside id="sidebar" class="sidebar" aria-label="Conversaciones">
+    <a class="brand" href="/" aria-label="Memoria, inicio"><span class="brand-mark"><svg class="icon"><use href="#i-memory"/></svg></span>memoria<span class="brand-dot">.</span></a>
+    <div class="sidebar-caption">TU ASISTENTE PERSONAL</div>
+    <button id="new-chat" class="new-chat"><svg class="icon"><use href="#i-plus"/></svg>Nueva conversación<span class="shortcut">Alt N</span></button>
+    <label class="search"><svg class="icon"><use href="#i-search"/></svg><input id="history-search" type="search" placeholder="Buscar conversación" aria-label="Buscar conversación" autocomplete="off"></label>
+    <div class="section-label"><span>CONVERSACIONES</span><button id="refresh-history" class="icon-button" title="Actualizar conversaciones" aria-label="Actualizar conversaciones"><svg class="icon"><use href="#i-refresh"/></svg></button></div>
+    <nav id="conversation-list" class="conversation-list" aria-label="Historial de conversaciones"><p class="list-empty">Cargando conversaciones…</p></nav>
+    <div class="sidebar-bottom">
+      <div class="local-note"><svg class="icon"><use href="#i-lock"/></svg><span>Tu espacio, tus recuerdos<small>Tú decides qué conservar.</small></span></div>
+      <div class="profile"><div class="profile-avatar">T</div><div><strong>Tu espacio personal</strong><span>Asistente con memoria</span></div><span class="profile-local">LOCAL</span></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button id="menu-toggle" class="icon-button mobile-menu" aria-label="Abrir conversaciones" aria-expanded="false" aria-controls="sidebar"><svg class="icon"><use href="#i-menu"/></svg></button>
+      <div class="chat-heading"><span class="eyebrow">TU ESPACIO PARA PENSAR</span><h1 id="chat-title">Nueva conversación</h1></div>
+      <div class="topbar-actions"><span id="connection-status" class="connection-status"><i></i><span>Conectando</span></span><button id="delete-chat" class="icon-button" title="Eliminar conversación" aria-label="Eliminar conversación actual" hidden><svg class="icon"><use href="#i-trash"/></svg></button><button id="memory-toggle" class="memory-toggle" aria-expanded="true" aria-controls="memory-panel"><svg class="icon"><use href="#i-memory"/></svg><span>Recuerdos</span><span id="memory-total" class="count">0</span></button></div>
+    </header>
+
+    <div id="notice" class="notice" role="status" hidden><svg class="icon"><use href="#i-info"/></svg><span id="notice-text"></span><button id="restore-draft" class="text-button" hidden>Recuperar borrador</button><button id="dismiss-notice" class="icon-button" aria-label="Cerrar aviso"><svg class="icon"><use href="#i-close"/></svg></button></div>
+
+    <div id="chat-scroll" class="chat-scroll">
+      <section id="welcome" class="welcome">
+        <div class="welcome-symbol"><svg class="icon"><use href="#i-memory"/></svg><span class="tiny-spark">✧</span></div>
+        <div class="welcome-eyebrow">HOLA, QUÉ BUENO TENERTE AQUÍ</div>
+        <h2>Una buena conversación.<br><em>Una memoria que te conoce.</em></h2>
+        <p>Comparte una idea, retoma un proyecto o cuéntame algo sobre ti.<br class="desktop-break"> Tú eliges qué recordar para la próxima vez.</p>
+        <div class="suggestions">
+          <button class="suggestion" data-prompt="Ayúdame a organizar mis ideas para un nuevo proyecto."><span class="suggestion-icon peach"><svg class="icon"><use href="#i-spark"/></svg></span><strong>Demos forma a una idea</strong><span>Piensa en voz alta. Yo te acompaño.</span><svg class="icon suggestion-arrow"><use href="#i-arrow-right"/></svg></button>
+          <button class="suggestion" data-prompt="Prefiero desarrollar en C# y .NET. Me gustan las explicaciones con ejemplos."><span class="suggestion-icon sage"><svg class="icon"><use href="#i-memory"/></svg></span><strong>Cuéntame algo sobre ti</strong><span>Tus preferencias hacen la diferencia.</span><svg class="icon suggestion-arrow"><use href="#i-arrow-right"/></svg></button>
+          <button class="suggestion" data-prompt="¿Qué recuerdas de mis preferencias y de nuestros proyectos?"><span class="suggestion-icon lavender"><svg class="icon"><use href="#i-chat"/></svg></span><strong>Retomemos el hilo</strong><span>Conecta con lo que ya conversamos.</span><svg class="icon suggestion-arrow"><use href="#i-arrow-right"/></svg></button>
+        </div>
+      </section>
+      <section id="messages" class="messages" aria-label="Mensajes de la conversación" aria-busy="false"></section>
+      <div id="chat-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+      <div id="thinking" class="thinking" role="status" hidden><span class="assistant-avatar"><svg class="icon"><use href="#i-memory"/></svg></span><span class="thinking-dots"><i></i><i></i><i></i></span><span>Preparando tu respuesta…</span></div>
+    </div>
+
+    <footer class="composer-area">
+      <form id="chat-form" class="composer">
+        <label class="sr-only" for="message-input">Escribe un mensaje a Memoria</label>
+        <textarea id="message-input" placeholder="¿Qué tienes en mente?" rows="1" maxlength="4000" enterkeyhint="send"></textarea>
+        <div class="composer-bottom"><span class="composer-hint"><svg class="icon"><use href="#i-memory"/></svg>Un poco más de contexto. Una mejor conversación.</span><div class="send-controls"><span id="character-count" class="character-count" hidden>0 / 4000</span><button id="stop-send" class="stop-button" type="button" hidden><svg class="icon"><use href="#i-stop"/></svg>Detener</button><button id="send-message" class="send-button" type="submit" aria-label="Enviar mensaje" disabled><svg class="icon"><use href="#i-arrow"/></svg></button></div></div>
+      </form>
+      <div class="composer-footnote"><span><kbd>Enter</kbd> para enviar <span class="footnote-dot">·</span> <kbd>Mayús + Enter</kbd> para una nueva línea</span><span>Lo importante, con tu permiso.</span></div>
+    </footer>
+  </main>
+
+  <aside id="memory-panel" class="memory-panel" aria-label="Tus recuerdos">
+    <div class="memory-header"><span class="panel-label"><svg class="icon"><use href="#i-memory"/></svg>Tu memoria</span><button id="close-memory" class="icon-button" aria-label="Cerrar recuerdos"><svg class="icon"><use href="#i-close"/></svg></button></div>
+    <div class="memory-intro"><h2>Lo que nos conecta.</h2><p>Un poco de ti, para no empezar<br>de cero cada vez.</p></div>
+    <div class="memory-tabs" role="tablist" aria-label="Estado de recuerdos"><button id="tab-active" class="memory-tab active" role="tab" aria-selected="true" aria-controls="memory-list">Guardados <span id="active-count">0</span></button><button id="tab-pending" class="memory-tab" role="tab" aria-selected="false" aria-controls="memory-list">Por revisar <span id="pending-count">0</span></button></div>
+    <div id="memory-list" class="memory-list" role="tabpanel" aria-labelledby="tab-active"><p class="list-empty">Cargando recuerdos…</p></div>
+    <div class="memory-footer"><svg class="icon"><use href="#i-lock"/></svg><p><strong>Siempre bajo tu control.</strong>Puedes revisar, corregir u olvidar<br>cualquier recuerdo cuando quieras.</p><button id="refresh-memories" class="text-button">Actualizar recuerdos</button></div>
+  </aside>
+
+  <dialog id="action-dialog" class="action-dialog" aria-labelledby="dialog-title"><form id="dialog-form"><div class="dialog-header"><h2 id="dialog-title"></h2><button id="dialog-close" type="button" class="icon-button" aria-label="Cerrar"><svg class="icon"><use href="#i-close"/></svg></button></div><p id="dialog-description" class="dialog-description"></p><div id="dialog-content"></div><p id="dialog-error" class="dialog-error" role="alert" hidden></p><div class="dialog-actions"><button id="dialog-cancel" class="secondary-button" type="button">Cancelar</button><button id="dialog-confirm" class="primary-button" type="submit">Confirmar</button></div></form></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <noscript><p class="noscript">Activa JavaScript para utilizar el chat de Memoria.</p></noscript>
+</body>
+</html>

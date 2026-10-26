@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SmartCalculator.Domain/SmartCalculator.Domain.csproj" />
+    <Project Path="src/SmartCalculator.Application/SmartCalculator.Application.csproj" />
+    <Project Path="src/SmartCalculator.Infrastructure/SmartCalculator.Infrastructure.csproj" />
+    <Project Path="src/SmartCalculator.Api/SmartCalculator.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SmartCalculator.Application.Tests/SmartCalculator.Application.Tests.csproj" />
+    <Project Path="tests/SmartCalculator.Tests/SmartCalculator.Tests.csproj" />
+  </Folder>
+</Solution>

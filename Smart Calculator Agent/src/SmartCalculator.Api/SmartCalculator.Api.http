@@ -1,0 +1,28 @@
+@baseUrl = http://localhost:5279
+
+### Estado
+GET {{baseUrl}}/health
+
+### Cálculos encadenados
+POST {{baseUrl}}/api/calculator
+Content-Type: application/json
+
+{
+  "message": "Suma 5 y 3, multiplica el resultado por 2 y calcula su raíz cuadrada."
+}
+
+### Operaciones independientes
+POST {{baseUrl}}/api/calculator
+Content-Type: application/json
+
+{
+  "message": "Calcula 2 elevado a 10 y la raíz cuadrada de 81."
+}
+
+### Error matemático
+POST {{baseUrl}}/api/calculator
+Content-Type: application/json
+
+{
+  "message": "Divide 10 entre 0."
+}

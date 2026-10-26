@@ -1,0 +1,98 @@
+@host = http://localhost:5281
+@conversationId = 00000000-0000-0000-0000-000000000000
+@memoryId = 00000000-0000-0000-0000-000000000000
+@candidateId = 00000000-0000-0000-0000-000000000000
+@version = 1
+
+### Proceso
+GET {{host}}/health
+
+### PostgreSQL y esquema
+GET {{host}}/health/ready
+
+### Crear conversación: copia el id en conversationId
+POST {{host}}/api/conversations
+
+### Generar candidato
+POST {{host}}/api/conversations/{{conversationId}}/messages
+Content-Type: application/json
+
+{ "message": "Prefiero desarrollar en C# y .NET." }
+
+### Consultar candidatos y copiar id/version
+GET {{host}}/api/memories?status=Pending
+
+### Aprobar candidato común
+POST {{host}}/api/memory-candidates/{{candidateId}}/approve
+Content-Type: application/json
+
+{ "version": {{version}}, "confirmSensitive": false }
+
+### Rechazar candidato (alternativa a aprobar)
+POST {{host}}/api/memory-candidates/{{candidateId}}/reject
+Content-Type: application/json
+
+{ "version": {{version}} }
+
+### Crear otra conversación; sustituye conversationId y pregunta
+POST {{host}}/api/conversations
+
+### Recuperación entre conversaciones
+POST {{host}}/api/conversations/{{conversationId}}/messages
+Content-Type: application/json
+
+{ "message": "¿Qué lenguaje suelo usar?" }
+
+### Consulta semántica directa
+POST {{host}}/api/memories/search
+Content-Type: application/json
+
+{ "query": "Mis preferencias de programación" }
+
+### Guardado explícito; copia el nuevo memory.id y version
+POST {{host}}/api/memories
+Content-Type: application/json
+
+{ "content": "Prefiero respuestas breves", "category": "Semantic", "sensitive": false }
+
+### Corrección explícita; devuelve un nuevo id de recuerdo
+PATCH {{host}}/api/memories/{{memoryId}}
+Content-Type: application/json
+
+{ "content": "Ahora prefiero explicaciones detalladas", "version": {{version}}, "category": "Semantic", "sensitive": false, "confirmSensitive": false }
+
+### Propuesta de dato sensible: permanece pendiente
+POST {{host}}/api/memories
+Content-Type: application/json
+
+{ "content": "Tengo diabetes", "category": "Semantic", "sensitive": true, "confirmSensitive": false }
+
+### Solo después de revisar y consentir específicamente el candidato sensible
+POST {{host}}/api/memory-candidates/{{candidateId}}/approve
+Content-Type: application/json
+
+{ "version": {{version}}, "confirmSensitive": true }
+
+### Guardado mediante orden explícita (con clasificación de sensibilidad)
+POST {{host}}/api/conversations/{{conversationId}}/messages
+Content-Type: application/json
+
+{ "message": "Recuerda que prefiero desarrollar en C#" }
+
+### Consolidación: devuelve propuestas pendientes
+POST {{host}}/api/memories/consolidate
+
+### Reindexar después de cambiar modelo/dimensiones o recuperar el proveedor
+POST {{host}}/api/memories/reindex
+
+### Listado completo, incluidos estados pendientes, rechazados y sustituidos
+GET {{host}}/api/memories
+
+### Historial disponible
+GET {{host}}/api/conversations/{{conversationId}}
+
+### Olvidar recuerdo y su información relacionada
+DELETE {{host}}/api/memories/{{memoryId}}
+
+### Borrado físico de conversación y recuerdos derivados
+DELETE {{host}}/api/conversations/{{conversationId}}
